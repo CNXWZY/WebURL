@@ -1,0 +1,8 @@
+1.index.html文件第483行的workers地址替换成你的，在https://dash.cloudflare.com/这里创建workers
+
+
+2.config.js文件第4行的 workers地址替换成你的
+
+3.后台登录密码：admin
+
+修改密码请替换admin.html第832行的哈希值：8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918

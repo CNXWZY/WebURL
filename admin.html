@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网址管理后台 - 导航网站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --surface-hover: #f1f5f9;
+            --border: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius: 0.5rem;
+            --radius-lg: 0.75rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 登录页面样式 */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        .login-container h2 {
+            margin-bottom: 30px;
+            color: var(--text-primary);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .login-container .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .login-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* 管理后台样式 */
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            padding: 20px 30px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .admin-title {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-header .btn-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .back-link, .logout-btn {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .back-link:hover, .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* 主布局 */
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* 面板样式 */
+        .management-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .management-panel:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title i {
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: var(--surface);
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline-primary {
+            background: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-outline-success {
+            background: transparent;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .btn-outline-success:hover {
+            background: var(--success-color);
+            color: white;
+        }
+
+        /* 分类管理 */
+        .category-input-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .category-input-group .form-control {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .category-tag {
+            background: var(--surface-hover);
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            border-radius: var(--radius);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .category-tag .remove-category {
+            cursor: pointer;
+            color: var(--error-color);
+            font-size: 10px;
+        }
+
+        /* 网址列表 */
+        .url-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .url-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .url-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .url-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .url-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .url-category {
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: var(--radius);
+            font-size: 12px;
+        }
+
+        .url-url {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .url-url:hover {
+            text-decoration: underline;
+        }
+
+        .url-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: 8px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 2.8em;
+        }
+
+        .url-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--text-muted);
+        }
+
+        /* 工具栏 */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .toolbar .btn-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-count {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .admin-layout {
+                grid-template-columns: 1fr 1.5fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .sidebar {
+                order: 2;
+            }
+
+            .url-list-section {
+                order: 1;
+            }
+
+            .url-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 12px;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .admin-title {
+                font-size: 20px;
+            }
+
+            .admin-header .btn-group {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .management-panel {
+                padding: 20px;
+                margin-bottom: 16px;
+            }
+
+            .panel-title {
+                font-size: 16px;
+            }
+
+            .url-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .toolbar .btn-group {
+                justify-content: center;
+            }
+
+            .login-container {
+                margin: 20px auto;
+                padding: 30px 20px;
+            }
+
+            .category-input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .category-input-group .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-container {
+                padding: 8px;
+            }
+
+            .admin-header {
+                padding: 16px;
+            }
+
+            .management-panel {
+                padding: 16px;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            .url-card {
+                padding: 12px;
+            }
+        }
+
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 提示弹窗 */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 300px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--error-color);
+        }
+
+        .toast i {
+            font-size: 16px;
+        }
+
+        .toast.success i {
+            color: var(--success-color);
+        }
+
+        .toast.warning i {
+            color: var(--warning-color);
+        }
+
+        .toast.error i {
+            color: var(--error-color);
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* 隐藏类 */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div class="login-container" id="loginContainer">
+        <h2><i class="fas fa-lock"></i> 管理后台登录</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="password">管理密码</label>
+                <input type="password" id="password" class="form-control" placeholder="请输入管理密码" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> 登录
+            </button>
+        </form>
+    </div>
+
+    <!-- 管理后台 -->
+    <div class="admin-container hidden" id="adminContainer">
+        <div class="admin-header">
+            <div class="admin-title">
+                <i class="fas fa-cog"></i>
+                网址管理后台
+            </div>
+            <div class="btn-group">
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> 返回主页
+                </a>
+                <a href="#" class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> 退出登录
+                </a>
+            </div>
+        </div>
+
+        <div class="admin-layout">
+            <!-- 左侧：添加新网址和分类管理 -->
+            <div class="sidebar">
+                <div class="management-panel">
+                    <h3 class="panel-title">
+                        <i class="fas fa-plus"></i>
+                        添加新网址
+                    </h3>
+                    <form id="addUrlForm">
+                        <div class="form-group">
+                            <label>网站名称</label>
+                            <input type="text" id="siteName" class="form-control" placeholder="网站名称" required>
+                        </div>
+                        <div class="form-group">
+                            <label>网站地址</label>
+                            <input type="url" id="siteUrl" class="form-control" placeholder="https://example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>分类</label>
+                            <select id="siteCategory" class="form-control" required>
+                                <option value="">选择分类</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>网站描述</label>
+                            <textarea id="siteDescription" class="form-control" placeholder="请输入网站描述（可选）" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-plus"></i> 添加网址
+                        </button>
+                    </form>
+                    
+                    <form id="editUrlForm" style="display: none;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">
+                            <i class="fas fa-edit"></i> 编辑网址
+                        </h4>
+                        <div class="form-group">
+                            <label>网站名称</label>
+                            <input type="text" id="editSiteName" class="form-control" placeholder="网站名称" required>
+                        </div>
+                        <div class="form-group">
+                            <label>网站地址</label>
+                            <input type="url" id="editSiteUrl" class="form-control" placeholder="https://example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>分类</label>
+                            <select id="editSiteCategory" class="form-control" required>
+                                <option value="">选择分类</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>网站描述</label>
+                            <textarea id="editSiteDescription" class="form-control" placeholder="请输入网站描述（可选）" rows="2"></textarea>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                                <i class="fas fa-save"></i> 保存修改
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" onclick="cancelEdit()" style="flex: 1;">
+                                <i class="fas fa-times"></i> 取消
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="management-panel">
+                    <h3 class="panel-title">
+                        <i class="fas fa-tags"></i>
+                        分类管理
+                    </h3>
+                    <div class="category-input-group">
+                        <input type="text" id="newCategoryInput" class="form-control" placeholder="输入新分类名称">
+                        <button class="btn btn-primary" onclick="addCategory()">
+                            <i class="fas fa-plus"></i> 添加
+                        </button>
+                    </div>
+                    <div id="categoryList" class="category-list">
+                        <!-- 动态加载分类 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：网址列表 -->
+            <div class="url-list-section">
+                <div class="management-panel">
+                    <h3 class="panel-title">
+                        <i class="fas fa-list"></i>
+                        网址列表
+                    </h3>
+                    <div class="toolbar">
+                        <div class="filter-count">
+                            共 <span id="totalCount">0</span> 个网址
+                        </div>
+                        <div class="btn-group">
+                            <select id="categoryFilter" class="form-control" style="min-width: 120px;" onchange="loadUrls()">
+                                <option value="">全部分类</option>
+                            </select>
+                            <button class="btn btn-outline-primary" id="exportBtn">
+                                <i class="fas fa-download"></i> 导出
+                            </button>
+                            <button class="btn btn-outline-success" id="importBtn">
+                                <i class="fas fa-upload"></i> 导入
+                            </button>
+                            <input type="file" id="importFile" accept=".json" style="display: none;">
+                        </div>
+                    </div>
+                    <div id="urlList" class="url-grid">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>暂无网址数据</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // 全局变量
+        const API_BASE_URL = CONFIG.API_BASE_URL;
+        let allUrls = [];
+        let allCategories = [];
+
+        // 创建提示弹窗容器
+        const toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container';
+        document.body.appendChild(toastContainer);
+
+        // 显示提示弹窗
+        function showToast(type, title, message) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} fade-in`;
+            
+            const iconMap = {
+                success: 'fas fa-check-circle',
+                warning: 'fas fa-exclamation-triangle',
+                error: 'fas fa-times-circle'
+            };
+            
+            toast.innerHTML = `
+                <i class="${iconMap[type]}"></i>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // 3秒后自动移除
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 3000);
+        }
+
+        // 本地验证的登录机制
+        let isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+
+        // 页面元素
+        const loginContainer = document.getElementById('loginContainer');
+        const adminContainer = document.getElementById('adminContainer');
+        const loginForm = document.getElementById('loginForm');
+        const logoutBtn = document.getElementById('logoutBtn');     
+        // 检查登录状态
+        function checkLoginStatus() {
+            if (isLoggedIn) {
+                loginContainer.classList.add('hidden');
+                adminContainer.classList.remove('hidden');
+                loadCategories();
+                loadUrls();
+            } else {
+                loginContainer.classList.remove('hidden');
+                adminContainer.classList.add('hidden');
+            }
+        }
+// 登录处理
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            
+            try {
+                // 使用哈希值验证，不存储明文密码
+                const passwordHash = await sha256(password);
+                const correctHash = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; 
+                if (passwordHash === correctHash) {
+					  
+													  
+				   
+				
+													 
+				
+									 
+                    isLoggedIn = true;
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    checkLoginStatus();
+                    document.getElementById('password').value = '';
+                } else {
+                    alert('密码错误，请重试！');
+                    document.getElementById('password').value = '';
+                }
+            } catch (error) {
+                console.error('登录失败:', error);
+                alert('登录失败，请检查网络连接！');
+            }
+        });
+
+        // SHA256 哈希函数
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        // 退出登录
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            isLoggedIn = false;
+            localStorage.removeItem('adminLoggedIn');
+            checkLoginStatus();
+																		  
+        });
+
+        // 获取请求头
+        function getAuthHeaders() {
+            return {
+                'Content-Type': 'application/json'
+            };
+        }
+
+         // 加载分类数据
+       
+        async function loadCategories() {
+            try {
+                if (CONFIG.DEBUG_MODE) {
+                    console.log('正在加载分类:', `${API_BASE_URL}/api/bookmarks/categories`);
+                }
+                
+                const response = await fetch(`${API_BASE_URL}/api/bookmarks/categories`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    mode: 'cors'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP错误: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (CONFIG.DEBUG_MODE) {
+                    console.log('分类加载成功:', data);
+                }
+                
+                if (Array.isArray(data)) {
+                    allCategories = data;
+                } else if (data.categories && Array.isArray(data.categories)) {
+                    allCategories = data.categories;
+                } else {
+                    allCategories = CONFIG.CATEGORIES || [];
+                }
+                
+                // 更新分类选择器
+                const categorySelect = document.getElementById('siteCategory');
+                const categoryFilter = document.getElementById('categoryFilter');
+                
+                categorySelect.innerHTML = '<option value="">选择分类</option>';
+                categoryFilter.innerHTML = '<option value="">全部分类</option>';
+                
+                allCategories.forEach(category => {
+                    categorySelect.innerHTML += `<option value="${category}">${category}</option>`;
+                    categoryFilter.innerHTML += `<option value="${category}">${category}</option>`;
+                });
+
+                // 更新分类列表
+                updateCategoryList();
+            } catch (error) {
+                console.error('加载分类失败:', error);
+                
+                // 使用默认分类
+                allCategories = CONFIG.CATEGORIES || ['常用', '工作', '学习', '娱乐', '社交', '其他'];
+                updateCategoryList();
+                
+                if (CONFIG.DEBUG_MODE) {
+                    showToast('warning', '分类加载失败', '使用默认分类列表');
+                }
+            }
+        }
+
+        // 更新分类列表显示
+        function updateCategoryList() {
+            const categoryList = document.getElementById('categoryList');
+            categoryList.innerHTML = allCategories.map(category => `
+                <div class="category-tag">
+                    ${category}
+                    <span class="remove-category" onclick="removeCategory('${category}')" title="删除分类">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // 添加分类
+        async function addCategory() {
+            const input = document.getElementById('newCategoryInput');
+            const category = input.value.trim();
+            
+            if (!category) {
+                showToast('warning', '提示', '请输入分类名称');
+                return;
+            }
+            
+            if (allCategories.includes(category)) {
+                showToast('warning', '提示', '分类已存在');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookmarks/categories`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ category })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    allCategories.push(category);
+                    loadCategories();
+                    input.value = '';
+                    showToast('success', '成功', '分类添加成功');
+                } else {
+                    showToast('error', '失败', result.message || '添加分类失败');
+                }
+            } catch (error) {
+                showToast('error', '失败', '网络连接错误');
+            }
+        }
+
+        // 删除分类
+        async function removeCategory(category) {
+            if (!confirm(`确定要删除分类 "${category}" 吗？`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookmarks/categories/${encodeURIComponent(category)}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    allCategories = allCategories.filter(c => c !== category);
+                    loadCategories();
+                    loadUrls();
+                    showToast('success', '成功', '分类删除成功');
+                } else {
+                    showToast('error', '失败', result.message || '删除分类失败');
+                }
+            } catch (error) {
+                showToast('error', '失败', '网络连接错误');
+            }
+        }
+
+        // 加载网址
+        async function loadUrls() {
+            try {
+                const categoryFilter = document.getElementById('categoryFilter').value;
+                let url = `${API_BASE_URL}/api/bookmarks`;
+                if (categoryFilter) {
+                    url += `?category=${encodeURIComponent(categoryFilter)}`;
+                }
+                
+                if (CONFIG.DEBUG_MODE) {
+                    console.log('正在加载网址:', url);
+                }
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    mode: 'cors'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP错误: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (CONFIG.DEBUG_MODE) {
+                    console.log('加载成功，数据:', data);
+                }
+                
+                // 统一处理API返回的数据结构
+                let urls = [];
+                if (Array.isArray(data)) {
+                    urls = data;
+                } else if (data.data && Array.isArray(data.data)) {
+                    urls = data.data;
+                } else if (data.urls && Array.isArray(data.urls)) {
+                    urls = data.urls;
+                } else {
+                    urls = [];
+                }
+                
+                // 将API返回的title字段映射为name字段
+                allUrls = urls.map(item => ({
+                    id: item.id,
+                    name: item.title, // 将title映射为name
+                    url: item.url,
+                    category: item.category,
+                    description: item.description || '',
+                    created_at: item.created_at,
+                    updated_at: item.updated_at
+                }));
+                
+                displayUrls();
+            } catch (error) {
+                console.error('加载网址失败:', error);
+                
+                // 提供更详细的错误信息
+                let errorMessage = '加载网址失败';
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage = '网络连接失败，请检查API服务器是否正常运行';
+                } else if (error.message.includes('HTTP')) {
+                    errorMessage = `服务器错误: ${error.message}`;
+                } else if (error.message.includes('JSON')) {
+                    errorMessage = '数据解析失败，请检查API响应格式';
+                }
+                
+                showToast('error', '失败', errorMessage);
+                
+                // 显示调试信息
+                if (CONFIG.DEBUG_MODE) {
+                    showToast('info', '调试信息', `API地址: ${API_BASE_URL}/api/bookmarks`);
+                }
+            }
+        }
+
+        // 显示网址
+        function displayUrls() {
+            const urlList = document.getElementById('urlList');
+            const totalCount = document.getElementById('totalCount');
+            
+            totalCount.textContent = allUrls.length;
+            
+            if (allUrls.length === 0) {
+                urlList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>暂无网址数据</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            urlList.innerHTML = allUrls.map(url => `
+                <div class="url-card fade-in">
+                    <div class="url-card-header">
+                        <div class="url-name">${url.name}</div>
+                        <div class="url-category">${url.category || '未分类'}</div>
+                    </div>
+                    ${url.description ? `<div class="url-description" title="${url.description}">${url.description}</div>` : ''}
+                    <div class="url-actions">
+                        <button class="btn btn-sm btn-outline-primary" onclick="editUrl(${url.id})">
+                            <i class="fas fa-edit"></i> 编辑
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteUrl(${url.id})">
+                            <i class="fas fa-trash"></i> 删除
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 添加网址
+        document.getElementById('addUrlForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('siteName').value, // 改为title以匹配API
+                url: document.getElementById('siteUrl').value,
+                category: document.getElementById('siteCategory').value,
+                description: document.getElementById('siteDescription').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookmarks`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    this.reset();
+                    loadUrls();
+                    showToast('success', '成功', '网址添加成功');
+                } else {
+                    showToast('error', '失败', result.message || '添加网址失败');
+                }
+            } catch (error) {
+                showToast('error', '失败', '网络连接错误');
+            }
+        });
+
+        // 删除网址
+        async function deleteUrl(id) {
+            if (!confirm('确定要删除这个网址吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookmarks/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadUrls();
+                    showToast('success', '成功', '网址删除成功');
+                } else {
+                    showToast('error', '失败', result.message || '删除网址失败');
+                }
+            } catch (error) {
+                showToast('error', '失败', '网络连接错误');
+            }
+        }
+
+        // 编辑网址
+        function editUrl(id) {
+            console.log('点击编辑按钮，ID:', id, '类型:', typeof id);
+            console.log('所有网址:', allUrls);
+            const url = allUrls.find(u => u.id === id);
+            console.log('找到网址:', url);
+            if (!url) {
+                console.error('未找到ID为', id, '的网址');
+                return;
+            }
+            
+            document.getElementById('editSiteName').value = url.name;
+            document.getElementById('editSiteUrl').value = url.url;
+            document.getElementById('editSiteCategory').value = url.category || '';
+            document.getElementById('editSiteDescription').value = url.description || '';
+            
+            // 同步更新编辑表单的分类选择器
+            const editCategorySelect = document.getElementById('editSiteCategory');
+            editCategorySelect.innerHTML = '<option value="">选择分类</option>';
+            allCategories.forEach(category => {
+                editCategorySelect.innerHTML += `<option value="${category}">${category}</option>`;
+            });
+            editCategorySelect.value = url.category || '';
+            
+            // 显示编辑模式
+            document.getElementById('addUrlForm').style.display = 'none';
+            document.getElementById('editUrlForm').style.display = 'block';
+            document.getElementById('editUrlForm').dataset.editId = id;
+            
+            // 滚动到编辑区域
+            document.querySelector('.sidebar').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 取消编辑
+        function cancelEdit() {
+            document.getElementById('addUrlForm').style.display = 'block';
+            document.getElementById('editUrlForm').style.display = 'none';
+            document.getElementById('editUrlForm').reset();
+            document.getElementById('editUrlForm').removeAttribute('data-edit-id');
+        }
+
+        // 保存编辑
+        document.getElementById('editUrlForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const id = this.dataset.editId;
+            if (!id) return;
+            
+            const formData = {
+                title: document.getElementById('editSiteName').value,
+                url: document.getElementById('editSiteUrl').value,
+                category: document.getElementById('editSiteCategory').value,
+                description: document.getElementById('editSiteDescription').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookmarks/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    cancelEdit();
+                    loadUrls();
+                    showToast('success', '成功', '网址更新成功');
+                } else {
+                    showToast('error', '失败', result.message || '更新网址失败');
+                }
+            } catch (error) {
+                showToast('error', '失败', '网络连接错误');
+            }
+        });
+
+        // 导出数据
+        document.getElementById('exportBtn').addEventListener('click', async function() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bookmarks/export`);
+                const data = await response.json();
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], {
+                    type: 'application/json'
+                });
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `urls-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showToast('success', '成功', '数据导出成功');
+            } catch (error) {
+                showToast('error', '失败', '导出数据失败');
+            }
+        });
+
+        // 导入数据
+        document.getElementById('importBtn').addEventListener('click', function() {
+            document.getElementById('importFile').click();
+        });
+
+        document.getElementById('importFile').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                
+                const response = await fetch(`${API_BASE_URL}/api/bookmarks/import`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadCategories();
+                    loadUrls();
+                    showToast('success', '成功', '数据导入成功');
+                } else {
+                    showToast('error', '失败', result.message || '导入数据失败');
+                }
+            } catch (error) {
+                showToast('error', '失败', '文件格式错误或网络错误');
+            }
+        });
+
+        // 页面加载时检查登录状态
+        checkLoginStatus();
+    </script>
+</body>
+</html>
