@@ -9,6 +9,10 @@
 cloudflare workers免费提供的域名因为DNS污染无法访问，请绑定自己的域名或者申请免费域名绑定上去，然后api地址就填自己绑定在workers的域名
 
 免费域名申请：https://domain.digitalplat.org/
+<img width="1920" height="911" alt="前台" src="https://github.com/user-attachments/assets/0f72e269-cbbf-427d-b5b9-97598e88553c" />
+<img width="1920" height="911" alt="暗夜色" src="https://github.com/user-attachments/assets/0b6f2bcb-1e94-4d64-ba04-1bc70f8286cd" />
+<img width="1920" height="911" alt="后台" src="https://github.com/user-attachments/assets/393f5647-c49c-4e6d-a370-0feb47eebe0c" />
+
 
 ## 功能特点
 
