@@ -829,7 +829,7 @@
             try {
                 // 使用哈希值验证，不存储明文密码
                 const passwordHash = await sha256(password);
-                const correctHash = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; 
+                const correctHash = 'e754ad50731ece60e68578e2b581d546b0098ffcc90f1d92374e458d94eca7c2'; 
                 if (passwordHash === correctHash) {
 					  
 													  
@@ -1329,4 +1329,5 @@
         checkLoginStatus();
     </script>
 </body>
+
 </html>
