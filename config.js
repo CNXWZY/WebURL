@@ -1,7 +1,7 @@
 // 配置文件 - 请根据实际部署修改
 const CONFIG = {
     // API基础URL - 根据你的Cloudflare Workers部署地址修改
-    API_BASE_URL: 'https://',
+    API_BASE_URL: 'https://weburl-cmk.pages.dev',
     
     // 应用配置
     APP_NAME: '我的网址导航',
